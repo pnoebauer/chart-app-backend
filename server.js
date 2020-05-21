@@ -5,6 +5,7 @@ const cors = require('cors');
 const knex = require('knex');
 
 const register = require('./controllers/register');
+const signin = require('./controllers/signin');
 
 const db = knex({
   	client: 'pg',
@@ -21,10 +22,12 @@ app.use(express.json());
 
 app.get('/', (req,res) => {
 	res.json('This is working')
+	// db.select('*').from('users').then(users=>res.json(users[0]))
 });
 
-app.post('/register', (req,res) => register.handleRegister(req,res,db)); 
 
+app.post('/register', (req,res) => register.handleRegister(req,res,db)); 
+app.post('/signin', (req,res) => signin.handleSignin(req,res,db));
 
 app.listen(3000, ()=> {
 	console.log('app is running on port 3000')
