@@ -4,8 +4,17 @@ const handleSignin = (req,res,db) => {
 	db('users').where({
 	  email: email,
 	})
-	.then(user=>res.json(user[0]));
-	
+	.then(
+		user => {
+			if(user.length > 0){
+				return res.json(user[0]);
+			}
+			else {
+				return res.json('user does not exist');
+			}
+		} 
+	)
+	.catch(err => res.json('incorrect input variables'));
 }
 
 module.exports  = {

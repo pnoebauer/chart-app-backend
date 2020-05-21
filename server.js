@@ -21,8 +21,8 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req,res) => {
-	res.json('This is working')
-	// db.select('*').from('users').then(users=>res.json(users[0]))
+	// res.json('Connected to backend.')
+	db.select('*').from('users').then(users=>res.json(users[0]))
 });
 
 
