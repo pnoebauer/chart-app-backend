@@ -8,16 +8,16 @@ const handleRegister = (req,res,db) => {
 		})
 		.into('login')
 		.returning('email')
-		.then(loginEmail => res.json(loginEmail[0])
-			// trx('users')
-			// .insert({
-			// 	email: loginEmail[0],
-			// 	name: name,
-			// 	joined: new Date()
-			// })
-			// .returning('*')
-			// .then(user => res.json(user[0]))	
-			// // .catch(err => res.status(400).json('unable to register'));
+		.then(loginEmail =>
+			trx('users')
+			.insert({
+				email: loginEmail[0],
+				name: name,
+				joined: new Date()
+			})
+			.returning('*')
+			.then(user => res.json(user[0]))	
+			.catch(err => res.status(400).json('error registering name'));
 		)
 	.then(trx.commit)
 	.catch(trx.rollback)
