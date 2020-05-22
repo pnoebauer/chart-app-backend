@@ -1,10 +1,12 @@
+const bcrypt = require('bcrypt-nodejs');
+
 const handleSignin = (req,res,db) => {
 	const {email, password} = req.body;
 
 	db('login').where({email: email})
 	.then(userInfo => 
 		{
-			if(userInfo[0].hash === password) 
+			if(bcrypt.compareSync(password, userInfo[0].hash))
 			{
 				return db('users').select('*')
 					.where('email','=',userInfo[0].email)
