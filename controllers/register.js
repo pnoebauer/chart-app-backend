@@ -17,7 +17,7 @@ const handleRegister = (req,res,db) => {
 			})
 			.returning('*')
 			.then(user => res.json(user[0]))	
-			.catch(err => res.status(400).json('error registering name'));
+			.catch(err => res.status(400).json('error registering name'))
 		)
 	.then(trx.commit)
 	.catch(trx.rollback)
