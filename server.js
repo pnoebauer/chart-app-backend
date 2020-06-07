@@ -40,6 +40,49 @@ app.post('/signin', (req,res) => signin.handleSignin(req,res,db));
 
 app.get('/files/csv',(req,res) => data.handleData(req,res,db));
 
+// SELECT  
+//     date_trunc('day', datetime) datetime,
+//     (array_agg(openprice ORDER BY datetime ASC))[1] o,
+//     MAX(highprice) h,
+//     MIN(lowprice) l,
+//     (array_agg(closeprice ORDER BY datetime DESC))[1] c,
+//     SUM(volume) volume,
+// --    SUM(openint) openint,
+//     COUNT(*) ticks
+// FROM "sp500"  
+// --WHERE datetime BETWEEN '2000-11-08' AND '2000-11-09'  
+// GROUP BY date_trunc('day', datetime)  
+// ORDER BY datetime  
+// LIMIT 1000;  
+
+// db('sp500')
+//   .select(db.raw("date_trunc('day', datetime) datetime, \
+//     (array_agg(openprice ORDER BY datetime ASC))[1] o, \
+//     MAX(highprice) h, \
+//     MIN(lowprice) l, \
+//     (array_agg(closeprice ORDER BY datetime DESC))[1] c, \
+//      SUM(volume) volume, \
+//     COUNT(*) ticks"))
+//   .groupBy(db.raw("date_trunc('day', datetime)"))
+//   .orderBy('datetime')
+//   .limit(50)
+//   .then(data=>console.log(data))
+
+const period = 'day';
+
+db('sp500')
+  .select(db.raw(`date_trunc('${period}', datetime) datetime, \
+    (array_agg(openprice ORDER BY datetime ASC))[1] o, \
+    MAX(highprice) h, \
+    MIN(lowprice) l, \
+    (array_agg(closeprice ORDER BY datetime DESC))[1] c, \
+    SUM(volume) volume, \
+    COUNT(*) ticks`))
+  .whereBetween('datetime', ['2000-11-08', '2000-12-08'])
+  .groupBy(db.raw(`date_trunc('${period}', datetime)`))
+  .orderBy('datetime')
+  .limit(50)
+  .then(data=>console.log(data))
 
 
 app.listen(4000, () => {
