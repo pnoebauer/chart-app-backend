@@ -30,7 +30,8 @@ app.get('/', (req,res) => {
 
 app.post('/register', (req,res) => register.handleRegister(req,res,db)); 
 app.post('/signin', (req,res) => signin.handleSignin(req,res,db));
-app.get('/files/csv',(req,res) => data.handleData(req,res,db));
+// app.get('/files/csv',(req,res) => data.handleData(req,res,db));
+app.post('/files/csv',(req,res) => data.handleData(req,res,db));
 
 app.listen(4000, () => {
 	console.log('app is running on port 4000');

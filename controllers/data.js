@@ -8,19 +8,25 @@ const convertCSV = (data) => {
   return (
     stringify(data, { 
       header: true,
-      cast: {
-        date: value => {
-          // console.log(value);
-            // const formatTime = d3.timeFormat("%Y-%m-%d %H:%M")
-            const formatTime = d3.timeFormat("%Y-%m-%d")
-            return formatTime(value);
-        }
-      }
+      /*cast converts the JS date to a readable string;
+        use if csv file requires a meaningful date field*/
+      // cast: {
+      //   date: value => {
+      //     // console.log(value);
+      //       // const formatTime = d3.timeFormat("%Y-%m-%d %H:%M")
+      //       const formatTime = d3.timeFormat("%Y-%m-%d")
+      //       return formatTime(value);
+      //   }
+      // }
     })
   )
 }
 
 const dbToFrontend = (req,res,db) => {
+  const {period} = req.body;
+  // console.log(period);
+  // res.json(period);
+
   // adding appropriate headers, so browsers can start downloading
   // file as soon as this request starts to get served
   res.setHeader('Content-Type', 'text/csv');
@@ -31,7 +37,10 @@ const dbToFrontend = (req,res,db) => {
   // db('sp500').where('id','<',10).then(data=>res.send(data));
   // db('sp500').where('id','<',10000).then(data => convertCSV(data).pipe(res));
 
-const period = 'day';
+// https://www.compose.com/articles/building-ohlc-data-in-postgresql/
+// const period = 'day';
+// const period = 'hour';
+// const period = 'minute';
 
 // COUNT(*) ticks, \
 db('sp500')
@@ -44,7 +53,7 @@ db('sp500')
   // .whereBetween('datetime', ['2000-11-08', '2000-12-08'])
   .groupBy(db.raw(`date_trunc('${period}', datetime)`))
   .orderBy('date')
-  // .limit(50)
+  .limit(350)
   // .then(data=>console.log(data))
   // .then(data=>res.send(data));
   .then(data => convertCSV(data).pipe(res)
